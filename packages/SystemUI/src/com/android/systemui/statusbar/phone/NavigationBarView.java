@@ -26,17 +26,21 @@ import android.app.StatusBarManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.os.UserHandle;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.IDockedStackListener.Stub;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -98,6 +102,10 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
     final static int MSG_CHECK_INVALID_LAYOUT = 8686;
 
     private boolean mShowDpadArrowKeys;
+    private SettingsObserver mSettingsObserver;
+
+    private GestureDetector mDoubleTapGesture;
+    private boolean mDoubleTapToSleep;
 
     // performs manual animation in sync with layout transitions
     private final NavTransitionListener mTransitionListener = new NavTransitionListener();
@@ -217,6 +225,18 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         mButtonDisatchers.put(R.id.menu_always_show, new ButtonDispatcher(R.id.menu_always_show));
         mButtonDisatchers.put(R.id.search, new ButtonDispatcher(R.id.search));
         mButtonDisatchers.put(R.id.ime_switcher, new ButtonDispatcher(R.id.ime_switcher));
+        
+        mSettingsObserver = new SettingsObserver(new Handler());
+        
+        mDoubleTapGesture = new GestureDetector(mContext,
+                new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                if (pm != null) pm.goToSleep(e.getEventTime());
+                return true;
+            }
+        });
     }
 
     public BarTransitions getBarTransitions() {
@@ -239,6 +259,9 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         }
         if (mDeadZone != null && event.getAction() == MotionEvent.ACTION_OUTSIDE) {
             mDeadZone.poke(event);
+        }
+        if (mDoubleTapToSleep) {
+            mDoubleTapGesture.onTouchEvent(event);
         }
         return super.onTouchEvent(event);
     }
@@ -799,12 +822,14 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         super.onAttachedToWindow();
         TunerService.get(getContext()).addTunable(this,
                 "cmsystem:" + CMSettings.System.NAVIGATION_BAR_MENU_ARROW_KEYS);
+        mSettingsObserver.observe();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         TunerService.get(getContext()).removeTunable(this);
+        mSettingsObserver.unobserve();
     }
 
     @Override
@@ -821,6 +846,35 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
 
             final int vis = showingIme ? View.VISIBLE : View.INVISIBLE;
             getDpadView().setVisibility(vis);
+        }
+    }
+    
+    private class SettingsObserver extends UserContentObserver {
+
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void observe() {
+            super.observe();
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.DOUBLE_TAP_SLEEP_NAVBAR),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void unobserve() {
+            super.unobserve();
+            getContext().getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        protected void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+            mDoubleTapToSleep = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR, 0, UserHandle.USER_CURRENT) != 0;
         }
     }
 }
