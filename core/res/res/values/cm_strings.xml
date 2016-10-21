@@ -48,8 +48,8 @@
 
     <!-- Restart Confirmation Dialog.  When the user chooses to restart the device, there will
          be a confirmation dialog.  This is the message. -->
-    <string name="reboot_confirm" product="tablet">Your tablet will restart.</string>
-    <string name="reboot_confirm" product="default">Your phone will restart.</string>
+    <string name="reboot_confirm" product="tablet">Your tablet will restart now.</string>
+    <string name="reboot_confirm" product="default">Your phone will restart now.</string>
 
     <!-- Restart Progress Dialog. This is shown if the user chooses to restart the phone. -->
     <string name="reboot_progress">Restarting\u2026</string>
