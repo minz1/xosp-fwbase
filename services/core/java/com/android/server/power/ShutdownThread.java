@@ -241,7 +241,7 @@ public final class ShutdownThread extends Thread {
                                     if (selected >= 0 && selected < actions.length) {
                                         mReason = actions[selected];
                                     if (actions[selected].equals(SYSTEMUI_REBOOT)) {
-                                        mRebootReason = actions[selected];
+                                        mReason = actions[selected];
                                         doSystemUIReboot();
                                         return;     
                                    	}
