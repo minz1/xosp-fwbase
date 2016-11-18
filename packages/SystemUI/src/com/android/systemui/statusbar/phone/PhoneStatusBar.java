@@ -454,7 +454,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mNavigationIconHints = 0;
     private HandlerThread mHandlerThread;
-
+    
+    //XOSP NavBar switch
+    private boolean mNavBarSwitch;
+    
     Runnable mLongPressBrightnessChange = new Runnable() {
         @Override
         public void run() {
@@ -481,6 +484,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(CMSettings.System.getUriFor(
                     CMSettings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.XOSP_NAVBAR_SWITCH), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -508,6 +513,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         CMSettings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0, UserHandle.USER_CURRENT) == 1;
                 mNavigationBarView.setLeftInLandscape(navLeftInLandscape);
             }
+            
+            mNavBarSwitch = Settings.System.getIntForUser(resolver,
+                    Settings.System.XOSP_NAVBAR_SWITCH, 0, UserHandle.USER_CURRENT) == 1;
+            
+            mNavigationBarView.updateNavBarIcons(mNavBarSwitch);
         }
     }
 

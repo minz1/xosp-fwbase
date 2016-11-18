@@ -3699,6 +3699,25 @@ public final class Settings {
           * @hide
           */
          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
+         
+        /**
+         * Navigation bar height when it is on protrait
+         * @hide
+         */
+         public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
+
+        /**
+         * Navigation bar height when it is on landscape at the right
+         * @hide
+         */
+         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
+        
+        /**
+         * This restore back the old NavBar icons for users who don't like the new N ones
+         * @hide
+         */
+
+         public static final String XOSP_NAVBAR_SWITCH = "xosp_navbar_switch";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -6367,7 +6386,8 @@ public final class Settings {
          * @hide
          */
         public static final String DOUBLE_TAP_TO_WAKE = "double_tap_to_wake";
-
+        
+         
         /**
          * The current assistant component. It could be a voice interaction service,
          * or an activity that handles ACTION_ASSIST, or empty which means using the default
