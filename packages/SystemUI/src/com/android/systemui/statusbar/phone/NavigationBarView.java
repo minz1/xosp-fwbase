@@ -337,10 +337,8 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         }
         if (oldConfig.densityDpi != newConfig.densityDpi) {
             if(mNavBarSwitch==false){
-                mBackIcon = ctx.getDrawable(R.drawable.ic_sysbar_back);
+                mBackIcon = new BackButtonDrawable(ctx.getDrawable(R.drawable.ic_sysbar_back));
                 mBackLandIcon = mBackIcon;
-                mBackAltIcon = ctx.getDrawable(R.drawable.ic_sysbar_back_ime);
-                mBackAltLandIcon = mBackAltIcon;
 
                 mHomeDefaultIcon = ctx.getDrawable(R.drawable.ic_sysbar_home);
                 mRecentIcon = ctx.getDrawable(R.drawable.ic_sysbar_recent);
@@ -350,10 +348,8 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
             }
             else
             {
-                mBackIcon = ctx.getDrawable(R.drawable.ic_sysbar_second_back);
+                mBackIcon = new BackButtonDrawable(ctx.getDrawable(R.drawable.ic_sysbar_second_back));
                 mBackLandIcon = mBackIcon;
-                mBackAltIcon = ctx.getDrawable(R.drawable.ic_sysbar_second_back_ime);
-                mBackAltLandIcon = mBackAltIcon;
 
                 mHomeDefaultIcon = ctx.getDrawable(R.drawable.ic_sysbar_second_home);
                 mRecentIcon = ctx.getDrawable(R.drawable.ic_sysbar_second_recent);
