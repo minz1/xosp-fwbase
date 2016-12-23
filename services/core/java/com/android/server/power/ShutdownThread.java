@@ -238,14 +238,13 @@ public final class ShutdownThread extends Thread {
                                 if (selected != ListView.INVALID_POSITION) {
                                     String actions[] = context.getResources().getStringArray(
                                             com.android.internal.R.array.shutdown_reboot_actions);
-                                    if (selected >= 0 && selected < actions.length) {
-                                        mReason = actions[selected];
                                     if (actions[selected].equals(SYSTEMUI_REBOOT)) {
                                         mReason = actions[selected];
                                         doSystemUIReboot();
-                                        return;     
-                                   	}
-                                   	if (actions[selected].equals(SOFT_REBOOT)) {
+                                        return;
+                                    } else if ((selected >= 0 && selected < actions.length) {
+                                        mReason = actions[selected];
+                                        if (actions[selected].equals(SOFT_REBOOT)) {
                                             doSoftReboot();
                                             return;
                                         }
