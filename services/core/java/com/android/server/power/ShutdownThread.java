@@ -242,7 +242,7 @@ public final class ShutdownThread extends Thread {
                                         mReason = actions[selected];
                                         doSystemUIReboot();
                                         return;
-                                    } else if ((selected >= 0 && selected < actions.length) {
+                                    } else if (selected >= 0 && selected < actions.length) {
                                         mReason = actions[selected];
                                         if (actions[selected].equals(SOFT_REBOOT)) {
                                             doSoftReboot();
